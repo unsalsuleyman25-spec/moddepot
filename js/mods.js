@@ -1,7 +1,6 @@
 // ModDepot mod listesi
-// Yeni modlar buradan yönetilir.
-// İndirme linki yoksa "download": "#" kalır ve sitede Yakında görünür.
-// Gerçek link eklenirse İndir butonu yeni sekmede açılır.
+// Bu dosya Netlify admin sistemi tarafından otomatik güncellenir.
+// Manuel düzenleme yapmadan önce yedek almanız önerilir.
 
 window.ModDepotMods = [
   {
