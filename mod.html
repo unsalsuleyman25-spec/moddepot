@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mod Detayı | ModDepot</title>
+  <meta name="description" content="ModDepot üzerinde Farming Simulator 25 mod detaylarını, açıklamalarını, sürüm bilgilerini ve indirme bağlantılarını görüntüle.">
+  <meta name="keywords" content="FS25 mod detayı, Farming Simulator 25 mod indir, FS25 traktör modu, ModDepot">
+  <meta name="author" content="ModDepot">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0b1220">
+
+  <meta property="og:title" content="Mod Detayı | ModDepot">
+  <meta property="og:description" content="FS25 mod detaylarını ModDepot üzerinden görüntüle.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="images/moddepot-logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mod Detayı | ModDepot">
+  <meta name="twitter:description" content="FS25 mod detaylarını ve indirme bağlantılarını görüntüle.">
+  <meta name="twitter:image" content="images/moddepot-logo.png">
+
+  <link rel="icon" type="image/png" href="images/favicon.png?v=4">
+  <link rel="apple-touch-icon" href="images/favicon.png?v=4">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: #f8fafc;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .navbar {
+      background: #111827;
+      border-bottom: 1px solid #243047;
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .logo span {
+      color: #a3e635;
+    }
+
+    .brand-logo-img {
+      height: 46px;
+      width: auto;
+      max-width: 245px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-fallback {
+      display: none;
+    }
+
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 15px;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+    }
+
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+
+    .detail-hero {
+      padding: 55px 30px;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(163,230,53,0.18), transparent 35%),
+        #0b1220;
+      text-align: center;
+      border-bottom: 1px solid #243047;
+    }
+
+    .detail-hero span {
+      display: inline-block;
+      background: rgba(56,189,248,0.12);
+      color: #7dd3fc;
+      border: 1px solid rgba(56,189,248,0.3);
+      padding: 8px 15px;
+      border-radius: 30px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .detail-hero h1 {
+      font-size: 42px;
+      margin: 0;
+    }
+
+    .detail-hero p {
+      color: #cbd5e1;
+      font-size: 17px;
+      max-width: 720px;
+      margin: 14px auto 0;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .cover {
+      height: 340px;
+      background: linear-gradient(135deg, #172554, #0f766e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 100px;
+      background: linear-gradient(135deg, #172554, #0f766e);
+    }
+
+    .tag {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #7dd3fc;
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .card-body {
+      padding: 22px;
+    }
+
+    .card-body h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+
+    .card-body p {
+      color: #cbd5e1;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .info-panel {
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 20px;
+      padding: 22px;
+      height: fit-content;
+    }
+
+    .info-panel h3 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #243047;
+      padding: 13px 0;
+      color: #cbd5e1;
+    }
+
+    .info-row strong {
+      color: #f8fafc;
+    }
+
+    .actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .download-btn,
+    .back-btn {
+      display: block;
+      padding: 13px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .download-btn {
+      background: #a3e635;
+      color: #102000;
+    }
+
+    .download-btn:hover {
+      background: #bef264;
+    }
+
+    .download-btn.disabled {
+      background: #334155;
+      color: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .download-note {
+      margin-top: 8px;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .back-btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+    }
+
+    .back-btn:hover {
+      border-color: #38bdf8;
+      color: #7dd3fc;
+    }
+
+    .features {
+      margin-top: 24px;
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .features h3 {
+      margin-top: 0;
+    }
+
+    .features ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+
+    .not-found {
+      background: #111827;
+      border: 1px solid #243047;
+      padding: 35px;
+      border-radius: 20px;
+      text-align: center;
+      color: #cbd5e1;
+    }
+
+    footer {
+      border-top: 1px solid #243047;
+      color: #94a3b8;
+      text-align: center;
+      padding: 25px;
+      margin-top: 30px;
+      background: #080d18;
+    }
+
+    @media (max-width: 850px) {
+      .navbar {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .detail-hero h1 {
+        font-size: 32px;
+      }
+
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 18px;
+      }
+
+      .cover {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img class="brand-logo-img" src="images/moddepot-logo.png?v=4" alt="ModDepot" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="logo-fallback">Mod<span>Depot</span></span>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="index.html#modsArea">Modlar</a>
+      <a href="index.html#categories">Kategoriler</a>
+      <a href="#contact">İletişim</a>
+    </div>
+  </nav>
+
+  <section class="detail-hero">
+    <span>MOD DETAY SAYFASI</span>
+    <h1 id="pageTitle">Mod Detayı</h1>
+    <p id="pageDescription">Seçilen modun açıklaması, sürüm bilgisi ve indirme alanı.</p>
+  </section>
+
+  <main class="container" id="detailArea"></main>
+
+  <footer id="contact">
+    © 2026 ModDepot - Farming Simulator 25 Mod Platformu
+  </footer>
+
+  <script src="js/mods.js"></script>
+
+  <script>
+    const mods = window.ModDepotMods || [];
+
+    const params = new URLSearchParams(window.location.search);
+    const selectedId = params.get("id");
+    const mod = mods.find(function(item) {
+      return item.id === selectedId;
+    });
+
+    const pageTitle = document.getElementById("pageTitle");
+    const pageDescription = document.getElementById("pageDescription");
+    const detailArea = document.getElementById("detailArea");
+
+    function isDownloadReady(downloadLink) {
+      return downloadLink && downloadLink !== "#";
+    }
+
+    function getDownloadSource(downloadLink) {
+      if (!isDownloadReady(downloadLink)) return "Link yakında eklenecek.";
+
+      const link = downloadLink.toLowerCase();
+
+      if (link.includes("ay.live") || link.includes("aylink.co")) return "AY.LIVE yönlendirmesi üzerinden açılır.";
+      if (link.includes("trlink") || link.includes("tr.link")) return "TRLink yönlendirmesi üzerinden açılır.";
+      if (link.includes("sharemods")) return "ShareMods üzerinden açılır.";
+      if (link.includes("zipshare")) return "ZipShare üzerinden açılır.";
+      if (link.includes("drive.google")) return "Google Drive üzerinden açılır.";
+      if (link.includes("mega.nz")) return "MEGA üzerinden açılır.";
+      if (link.includes("mediafire")) return "MediaFire üzerinden açılır.";
+
+      return "Dış indirme bağlantısı üzerinden açılır.";
+    }
+
+    function checkDownload(downloadLink) {
+      if (!isDownloadReady(downloadLink)) {
+        alert("Bu modun indirme linki yakında eklenecek.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function showDetail() {
+      if (!mod) {
+        pageTitle.textContent = "Mod Bulunamadı";
+        pageDescription.textContent = "Aradığın mod sistemde bulunamadı veya link hatalı olabilir.";
+
+        detailArea.innerHTML = `
+          <div class="not-found">
+            <h2>Mod bulunamadı</h2>
+            <p>Bu mod silinmiş olabilir veya bağlantı yanlış olabilir.</p>
+            <a href="index.html" class="back-btn">Ana sayfaya dön</a>
+          </div>
+        `;
+        return;
+      }
+
+      document.title = mod.name + " | ModDepot";
+      pageTitle.textContent = mod.name;
+      pageDescription.textContent = mod.description;
+
+      const downloadReady = isDownloadReady(mod.download);
+      const downloadText = downloadReady ? "İndir" : "Yakında";
+      const downloadClass = downloadReady ? "download-btn" : "download-btn disabled";
+      const downloadTarget = downloadReady ? ' target="_blank" rel="noopener noreferrer"' : "";
+      const downloadSource = getDownloadSource(mod.download);
+      const coverHTML = mod.image
+        ? `<img src="${mod.image}" alt="${mod.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="cover-icon" style="display:none;">${mod.icon}</div>`
+        : `<div class="cover-icon">${mod.icon}</div>`;
+
+      detailArea.innerHTML = `
+        <div class="detail-layout">
+          <section>
+            <div class="card">
+              <div class="cover">
+                <span class="tag">${mod.category}</span>
+                ${coverHTML}
+              </div>
+
+              <div class="card-body">
+                <h2>${mod.name}</h2>
+                <p>${mod.description}</p>
+              </div>
+            </div>
+
+            <div class="features">
+              <h3>Mod Açıklaması</h3>
+              <ul>
+                <li>Farming Simulator 25 için hazırlanmıştır.</li>
+                <li>Kategori: ${mod.category}</li>
+                <li>Dosya boyutu: ${mod.size}</li>
+                <li>Sürüm: ${mod.version}</li>
+              </ul>
+            </div>
+          </section>
+
+          <aside class="info-panel">
+            <h3>Mod Bilgileri</h3>
+
+            <div class="info-row">
+              <span>Kategori</span>
+              <strong>${mod.category}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Versiyon</span>
+              <strong>${mod.version}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Dosya Boyutu</span>
+              <strong>${mod.size}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Ekleyen</span>
+              <strong>${mod.author}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Eklenme Tarihi</span>
+              <strong>${mod.addedDate}</strong>
+            </div>
+
+            <div class="actions">
+              <a href="${mod.download || '#'}" class="${downloadClass}"${downloadTarget} onclick="return checkDownload('${mod.download}')">${downloadText}</a>
+              <div class="download-note">${downloadSource}<br>İndirme bağlantıları yeni sekmede açılır.</div>
+              <a href="index.html" class="back-btn">Ana Sayfaya Dön</a>
+            </div>
+          </aside>
+        </div>
+      `;
+    }
+
+    showDetail();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ModDepot | FS25 Mod Merkezi</title>
+  <meta name="description" content="ModDepot, Farming Simulator 25 için traktör, harita, ekipman ve diğer FS25 modlarını sade ve hızlı şekilde keşfetmeni sağlayan mod platformudur.">
+  <meta name="keywords" content="FS25 mod, Farming Simulator 25 mod, FS25 traktör modu, FS25 harita modu, FS25 ekipman modu, FS25 mod indir, ModDepot">
+  <meta name="author" content="ModDepot">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0b1220">
+
+  <meta property="og:title" content="ModDepot | FS25 Mod Merkezi">
+  <meta property="og:description" content="Farming Simulator 25 için traktör, harita, ekipman ve diğer modları ModDepot üzerinden keşfet.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="images/moddepot-logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ModDepot | FS25 Mod Merkezi">
+  <meta name="twitter:description" content="FS25 modlarını sade ve hızlı bir arayüzle keşfet.">
+  <meta name="twitter:image" content="images/moddepot-logo.png">
+
+  <link rel="icon" type="image/png" href="images/favicon.png?v=4">
+  <link rel="apple-touch-icon" href="images/favicon.png?v=4">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: #f8fafc;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .navbar {
+      background: #111827;
+      border-bottom: 1px solid #243047;
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .logo span {
+      color: #a3e635;
+    }
+
+    .brand-logo-img {
+      height: 46px;
+      width: auto;
+      max-width: 245px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-fallback {
+      display: none;
+    }
+
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+    }
+
+    .nav-links a:hover {
+      color: #38bdf8;
+    }
+
+
+    .owner-link {
+      background: #a3e635;
+      color: #102000 !important;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .owner-link:hover {
+      background: #bef264;
+      color: #102000 !important;
+    }
+
+    .hero {
+      padding: 70px 30px;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(163,230,53,0.18), transparent 35%),
+        #0b1220;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(56,189,248,0.12);
+      color: #7dd3fc;
+      border: 1px solid rgba(56,189,248,0.3);
+      padding: 8px 15px;
+      border-radius: 30px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin: 0;
+    }
+
+    .hero p {
+      color: #cbd5e1;
+      font-size: 18px;
+      max-width: 650px;
+      margin: 16px auto 28px;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .primary-btn {
+      background: #38bdf8;
+      color: #07111f;
+    }
+
+    .primary-btn:hover {
+      background: #7dd3fc;
+    }
+
+    .secondary-btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+    }
+
+    .secondary-btn:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .main-area {
+      max-width: 1250px;
+      margin: auto;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 24px;
+    }
+
+    .sidebar {
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 18px;
+      padding: 20px;
+      height: fit-content;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+      color: #f8fafc;
+    }
+
+    .sidebar-note {
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+
+    .category-btn {
+      width: 100%;
+      background: #182235;
+      color: #cbd5e1;
+      border: 1px solid #26344d;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+      background: #38bdf8;
+      color: #07111f;
+      border-color: #38bdf8;
+    }
+
+    .content-top {
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: #f8fafc;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #38bdf8;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .stat-box {
+      background: #0b1220;
+      border: 1px solid #243047;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 22px;
+      color: #a3e635;
+    }
+
+    .stat-box span {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .section-title span {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .mods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .mod-card {
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    .mod-card:hover {
+      transform: translateY(-6px);
+      border-color: #38bdf8;
+      box-shadow: 0 14px 35px rgba(56, 189, 248, 0.15);
+    }
+
+    .mod-cover {
+      height: 155px;
+      background: linear-gradient(135deg, #172554, #0f766e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mod-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mod-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      background: linear-gradient(135deg, #172554, #0f766e);
+    }
+
+    .mod-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      color: #7dd3fc;
+      border: 1px solid rgba(125, 211, 252, 0.3);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .mod-body {
+      padding: 18px;
+    }
+
+    .mod-body h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    .mod-body p {
+      color: #cbd5e1;
+      line-height: 1.5;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .mod-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #94a3b8;
+      font-size: 13px;
+      border-top: 1px solid #243047;
+      padding-top: 12px;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .detail-btn,
+    .download-btn {
+      display: block;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .detail-btn {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+    }
+
+    .detail-btn:hover {
+      border-color: #38bdf8;
+      color: #7dd3fc;
+    }
+
+    .download-btn {
+      background: #a3e635;
+      color: #102000;
+    }
+
+    .download-btn:hover {
+      background: #bef264;
+    }
+
+    .download-btn.disabled {
+      background: #334155;
+      color: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .download-source {
+      display: block;
+      margin-top: 8px;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .empty {
+      background: #111827;
+      border: 1px solid #243047;
+      padding: 25px;
+      border-radius: 16px;
+      color: #cbd5e1;
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid #243047;
+      color: #94a3b8;
+      text-align: center;
+      padding: 25px;
+      margin-top: 30px;
+      background: #080d18;
+    }
+
+    @media (max-width: 850px) {
+      .main-area {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .hero {
+        padding: 50px 18px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .mods-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body id="top">
+
+  <nav class="navbar">
+    <a href="#top" class="logo">
+      <img class="brand-logo-img" src="images/moddepot-logo.png?v=4" alt="ModDepot" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <span class="logo-fallback">Mod<span>Depot</span></span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#top">Ana Sayfa</a>
+      <a href="#modsArea">Modlar</a>
+      <a href="#categories">Kategoriler</a>
+      <a href="#contact">İletişim</a>
+      <a href="admin.html" class="owner-link">+ Mod Ekle</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">FS25 MOD PLATFORMU</div>
+
+    <h1>Farming Simulator 25 Mod Merkezi</h1>
+
+    <p>
+      FS25 için traktör, harita, ekipman ve diğer modları sade bir arayüzle keşfet.
+      ModDepot, hızlı ve düzenli bir mod indirme alanı olarak hazırlanmıştır.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="#modsArea" class="primary-btn">Modları Gör</a>
+      <a href="#latestMods" class="secondary-btn">Son Eklenenler</a>
+    </div>
+  </section>
+
+  <main class="main-area" id="modsArea">
+
+    <aside class="sidebar" id="categories">
+      <h3>Kategoriler</h3>
+      <p class="sidebar-note">Kategoriler sade tutuldu. Detaylı ayrım yerine temel başlıklar kullanılır.</p>
+
+      <button class="category-btn active" onclick="changeCategory('Tümü', this)">📌 Tümü</button>
+      <button class="category-btn" onclick="changeCategory('Traktör', this)">🚜 Traktör</button>
+      <button class="category-btn" onclick="changeCategory('Harita', this)">🗺️ Harita</button>
+      <button class="category-btn" onclick="changeCategory('Ekipman', this)">⚙️ Ekipman</button>
+      <button class="category-btn" onclick="changeCategory('Diğer', this)">📦 Diğer</button>
+    </aside>
+
+    <section class="content" id="latestMods">
+
+      <div class="content-top">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Mod ara... Örnek: traktör, harita, ekipman"
+        >
+
+        <div class="stats">
+          <div class="stat-box">
+            <strong id="totalMods">0</strong>
+            <span>Toplam Mod</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>FS25</strong>
+            <span>Oyun Sürümü</span>
+          </div>
+
+          <div class="stat-box">
+            <strong id="shownMods">0</strong>
+            <span>Gösterilen Mod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>Mod Listesi</h2>
+        <span id="activeCategoryText">Tüm modlar gösteriliyor</span>
+      </div>
+
+      <div class="mods-grid" id="modsGrid"></div>
+
+    </section>
+
+  </main>
+
+  <footer id="contact">
+    © 2026 ModDepot - Farming Simulator 25 Mod Platformu
+  </footer>
+
+  <script src="js/mods.js"></script>
+
+  <script>
+    const mods = window.ModDepotMods || [];
+
+    let selectedCategory = "Tümü";
+
+    const modsGrid = document.getElementById("modsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const totalMods = document.getElementById("totalMods");
+    const shownMods = document.getElementById("shownMods");
+    const activeCategoryText = document.getElementById("activeCategoryText");
+
+    function showMods() {
+      const searchText = searchInput.value.toLowerCase().trim();
+
+      modsGrid.innerHTML = "";
+
+      const filteredMods = mods.filter(function(mod) {
+        const searchControl =
+          mod.name.toLowerCase().includes(searchText) ||
+          mod.category.toLowerCase().includes(searchText) ||
+          mod.description.toLowerCase().includes(searchText);
+
+        const categoryControl =
+          selectedCategory === "Tümü" || mod.category === selectedCategory;
+
+        return searchControl && categoryControl;
+      });
+
+      totalMods.textContent = mods.length;
+      shownMods.textContent = filteredMods.length;
+
+      if (selectedCategory === "Tümü") {
+        activeCategoryText.textContent = "Tüm modlar gösteriliyor";
+      } else {
+        activeCategoryText.textContent = selectedCategory + " kategorisi gösteriliyor";
+      }
+
+      if (filteredMods.length === 0) {
+        modsGrid.innerHTML = `
+          <div class="empty">
+            Aramana uygun mod bulunamadı.
+          </div>
+        `;
+        return;
+      }
+
+      filteredMods.forEach(function(mod) {
+        const downloadReady = isDownloadReady(mod.download);
+        const downloadText = downloadReady ? "İndir" : "Yakında";
+        const downloadClass = downloadReady ? "download-btn" : "download-btn disabled";
+        const downloadTarget = downloadReady ? ' target="_blank" rel="noopener noreferrer"' : "";
+        const downloadSource = getDownloadSource(mod.download);
+        const coverHTML = mod.image
+          ? `<img src="${mod.image}" alt="${mod.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="mod-icon" style="display:none;">${mod.icon}</div>`
+          : `<div class="mod-icon">${mod.icon}</div>`;
+
+        modsGrid.innerHTML += `
+          <div class="mod-card">
+            <div class="mod-cover">
+              <span class="mod-tag">${mod.category}</span>
+              ${coverHTML}
+            </div>
+
+            <div class="mod-body">
+              <h3>${mod.name}</h3>
+
+              <p>${mod.description}</p>
+
+              <div class="mod-meta">
+                <span>Versiyon: ${mod.version}</span>
+                <span>${mod.size}</span>
+              </div>
+
+              <div class="card-actions">
+                <a href="mod.html?id=${mod.id}" class="detail-btn">Detay</a>
+                <div>
+                  <a href="${mod.download || '#'}" class="${downloadClass}"${downloadTarget} onclick="return checkDownload('${mod.download}')">
+                    ${downloadText}
+                  </a>
+                  <span class="download-source">${downloadSource}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function changeCategory(category, button) {
+      selectedCategory = category;
+
+      const buttons = document.querySelectorAll(".category-btn");
+
+      buttons.forEach(function(btn) {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      showMods();
+    }
+
+    function isDownloadReady(downloadLink) {
+      return downloadLink && downloadLink !== "#";
+    }
+
+    function getDownloadSource(downloadLink) {
+      if (!isDownloadReady(downloadLink)) return "Link yakında";
+
+      const link = downloadLink.toLowerCase();
+
+      if (link.includes("ay.live") || link.includes("aylink.co")) return "AY.LIVE yönlendirme";
+      if (link.includes("trlink") || link.includes("tr.link")) return "TRLink yönlendirme";
+      if (link.includes("sharemods")) return "ShareMods";
+      if (link.includes("zipshare")) return "ZipShare";
+      if (link.includes("drive.google")) return "Google Drive";
+      if (link.includes("mega.nz")) return "MEGA";
+      if (link.includes("mediafire")) return "MediaFire";
+
+      return "Dış bağlantı";
+    }
+
+    function checkDownload(downloadLink) {
+      if (!isDownloadReady(downloadLink)) {
+        alert("Bu modun indirme linki yakında eklenecek.");
+        return false;
+      }
+
+      return true;
+    }
+
+    searchInput.addEventListener("input", showMods);
+
+    showMods();
+  </script>
+
+</body>
+</html>
