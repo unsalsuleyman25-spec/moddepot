@@ -15,18 +15,5 @@ window.ModDepotMods = [
     "image": "images/basak-traktor.png",
     "icon": "🚜",
     "download": "https://ay.live/basak"
-  },
-  {
-    "id": "mod-adi-deneme-kontrol-modu",
-    "name": "Mod Adı: Deneme Kontrol Modu",
-    "category": "Traktör",
-    "description": "Açıklama:\nBu mod otomatik kayıt sistemini test etmek için eklenmiştir.",
-    "version": "1.0",
-    "size": "1 MB",
-    "author": "ModDepot",
-    "addedDate": "07.06.2026",
-    "image": "",
-    "icon": "🚜",
-    "download": "#"
   }
 ];
