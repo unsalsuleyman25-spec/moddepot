@@ -7,7 +7,7 @@ window.ModDepotMods = [
     "id": "basak-traktor-paketi",
     "name": "Başak Traktör Paketi",
     "category": "Traktör",
-    "description": "FS25 için kırmızı Başak traktör modu. Çiftlik işleri için sade, kullanışlı ve güçlü traktör paketi.",
+    "description": "FS25 için kırmızı Başak traktör modu. Çiftlik işleri için sade, kullanışlı ve güçlü traktör paketi. güncellendi",
     "version": "1.0",
     "size": "120 MB",
     "author": "ModDepot",
