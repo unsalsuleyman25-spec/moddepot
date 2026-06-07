@@ -58,6 +58,104 @@ window.ModDepotMods = ${JSON.stringify(mods, null, 2)};
 `;
 }
 
+function safeGitHubPath(path) {
+  const cleaned = cleanText(path)
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "");
+
+  if (!cleaned) return "";
+
+  if (!cleaned.startsWith("images/")) {
+    throw new Error("Görsel yolu images/ klasörü içinde olmalıdır.");
+  }
+
+  if (cleaned.includes("..") || cleaned.includes("//")) {
+    throw new Error("Görsel yolu güvenli değil.");
+  }
+
+  if (!/\.(jpg|jpeg|png|webp)$/i.test(cleaned)) {
+    throw new Error("Görsel uzantısı jpg, jpeg, png veya webp olmalıdır.");
+  }
+
+  return cleaned;
+}
+
+function extractBase64(content) {
+  const text = cleanText(content);
+  if (!text) return "";
+
+  if (text.startsWith("data:")) {
+    const parts = text.split(",");
+    return parts.length > 1 ? parts[1] : "";
+  }
+
+  return text;
+}
+
+async function getExistingFileSha(path, githubHeaders, owner, repo, branch) {
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  const url = `${githubApiBase}/repos/${owner}/${repo}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: githubHeaders
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`GitHub görsel kontrolü başarısız: ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.sha || null;
+}
+
+async function uploadFileToGitHub(upload, githubHeaders, owner, repo, branch) {
+  const path = safeGitHubPath(upload.path);
+  const contentBase64 = extractBase64(upload.content);
+
+  if (!contentBase64) {
+    throw new Error(`${path} için görsel içeriği boş.`);
+  }
+
+  if (contentBase64.length > 8 * 1024 * 1024) {
+    throw new Error(`${path} görseli çok büyük. Daha küçük görsel seç.`);
+  }
+
+  const sha = await getExistingFileSha(path, githubHeaders, owner, repo, branch);
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+
+  const body = {
+    message: `ModDepot görsel güncellendi - ${path}`,
+    content: contentBase64,
+    branch
+  };
+
+  if (sha) {
+    body.sha = sha;
+  }
+
+  const response = await fetch(`${githubApiBase}/repos/${owner}/${repo}/contents/${encodedPath}`, {
+    method: "PUT",
+    headers: {
+      ...githubHeaders,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`${path} GitHub'a yüklenemedi: ${errorText}`);
+  }
+
+  return path;
+}
+
 exports.handler = async function (event) {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -71,6 +169,11 @@ exports.handler = async function (event) {
     return send(200, {
       ok: true,
       message: "ModDepot update-mods function aktif.",
+      features: {
+        modsUpdate: true,
+        imageUpload: true,
+        galleryUpload: true
+      },
       env: {
         owner: Boolean(process.env.GITHUB_OWNER),
         repo: Boolean(process.env.GITHUB_REPO),
@@ -118,6 +221,7 @@ exports.handler = async function (event) {
 
     const password = cleanText(body.password);
     const mods = body.mods;
+    const uploads = Array.isArray(body.uploads) ? body.uploads : [];
 
     if (password !== ADMIN_PASSWORD) {
       return send(401, {
@@ -147,15 +251,31 @@ exports.handler = async function (event) {
       });
     }
 
-    const encodedPath = MODS_FILE_PATH.split("/").map(encodeURIComponent).join("/");
-    const getUrl = `${githubApiBase}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodedPath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
-
     const githubHeaders = {
       Authorization: `Bearer ${GITHUB_TOKEN}`,
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
       "User-Agent": "ModDepot-Netlify-Admin"
     };
+
+    const uploadedPaths = [];
+
+    if (uploads.length > 0) {
+      if (uploads.length > 12) {
+        return send(400, {
+          ok: false,
+          message: "Tek seferde en fazla 12 görsel yükleyebilirsin."
+        });
+      }
+
+      for (const upload of uploads) {
+        const uploadedPath = await uploadFileToGitHub(upload, githubHeaders, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH);
+        uploadedPaths.push(uploadedPath);
+      }
+    }
+
+    const encodedPath = MODS_FILE_PATH.split("/").map(encodeURIComponent).join("/");
+    const getUrl = `${githubApiBase}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodedPath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
 
     const getResponse = await fetch(getUrl, {
       method: "GET",
@@ -204,8 +324,9 @@ exports.handler = async function (event) {
 
     return send(200, {
       ok: true,
-      message: "Mod listesi başarıyla güncellendi.",
+      message: uploads.length ? "Mod listesi ve görseller başarıyla güncellendi." : "Mod listesi başarıyla güncellendi.",
       count: cleanedMods.length,
+      uploadedImages: uploadedPaths,
       commit: result.commit && result.commit.html_url ? result.commit.html_url : null
     });
   } catch (error) {

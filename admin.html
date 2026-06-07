@@ -177,6 +177,39 @@
       margin-bottom: 16px;
     }
 
+
+    .file-upload-box {
+      background: #0b1220;
+      border: 1px dashed #334155;
+      border-radius: 14px;
+      padding: 14px;
+      margin: 10px 0 14px;
+    }
+
+    .file-upload-box input[type="file"] {
+      padding: 10px;
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      color: #e5e7eb;
+    }
+
+    .file-help,
+    .gallery-help {
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 7px;
+    }
+
+    .selected-files {
+      color: #a3e635;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 8px;
+      white-space: pre-wrap;
+    }
+
     .btn {
       border: none;
       padding: 13px 18px;
@@ -456,11 +489,25 @@
 
           <label for="image">Ana Resim Yolu veya Linki</label>
           <input id="image" placeholder="images/traktor.jpg veya https://...">
-          <div class="gallery-help">Ana sayfada sadece bu ana resim görünür.</div>
+          <div class="gallery-help">Ana sayfada sadece bu ana resim görünür. İstersen elle yol yazabilir, istersen aşağıdan bilgisayardan seçebilirsin.</div>
+
+          <label for="mainImageFile">Ana Resim Seç (Bilgisayardan)</label>
+          <div class="file-upload-box">
+            <input type="file" id="mainImageFile" accept="image/png,image/jpeg,image/webp">
+            <div class="file-help">1 ana görsel seç. Sistem resmi otomatik küçültüp <b>images</b> klasörüne kaydeder ve yolunu moda işler.</div>
+            <div id="mainImageFileInfo" class="selected-files"></div>
+          </div>
 
           <label for="gallery">Detay Galeri Resimleri</label>
           <textarea id="gallery" placeholder="Her satıra 1 görsel yaz. Örnek:\nimages/traktor-1.jpg\nimages/traktor-2.jpg\nimages/traktor-3.jpg"></textarea>
           <div class="gallery-help">Mod detay sayfasında galeri olarak görünür. En iyi görünüm için en az 3 görsel ekle.</div>
+
+          <label for="galleryFiles">Galeri Resimleri Seç (Bilgisayardan)</label>
+          <div class="file-upload-box">
+            <input type="file" id="galleryFiles" accept="image/png,image/jpeg,image/webp" multiple>
+            <div class="file-help">En az 3 galeri görseli seç. Seçersen galeri alanındaki eski liste yerine bu görseller kullanılacak.</div>
+            <div id="galleryFilesInfo" class="selected-files"></div>
+          </div>
 
           <label for="download">İndirme Linki</label>
           <input id="download" placeholder="TRLink / ShareMods / ZipShare / Drive linki. Boşsa Yakında olur">
@@ -603,6 +650,126 @@
       return Array.isArray(gallery) ? gallery.filter(Boolean).join("\n") : "";
     }
 
+    function getFileNameList(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input || !input.files || !input.files.length) return [];
+      return Array.from(input.files).map(file => file.name);
+    }
+
+    function updateSelectedFileInfo() {
+      const mainNames = getFileNameList("mainImageFile");
+      const galleryNames = getFileNameList("galleryFiles");
+
+      const mainInfo = document.getElementById("mainImageFileInfo");
+      const galleryInfo = document.getElementById("galleryFilesInfo");
+
+      if (mainInfo) {
+        mainInfo.textContent = mainNames.length ? "Seçilen ana resim: " + mainNames.join(", ") : "";
+      }
+
+      if (galleryInfo) {
+        galleryInfo.textContent = galleryNames.length ? "Seçilen galeri resimleri:\n" + galleryNames.join("\n") : "";
+      }
+    }
+
+    function readImageAsDataURL(file, maxSize = 1600, quality = 0.86) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type || !file.type.startsWith("image/")) {
+          reject(new Error("Sadece resim dosyası seçebilirsin."));
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function() {
+          const img = new Image();
+
+          img.onload = function() {
+            const ratio = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const width = Math.max(1, Math.round(img.width * ratio));
+            const height = Math.max(1, Math.round(img.height * ratio));
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          };
+
+          img.onerror = function() {
+            reject(new Error(file.name + " resmi okunamadı."));
+          };
+
+          img.src = reader.result;
+        };
+
+        reader.onerror = function() {
+          reject(new Error(file.name + " dosyası okunamadı."));
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function buildImagePath(modId, kind, index) {
+      const safeId = createSlug(modId || "mod");
+      const suffix = kind === "main" ? "main" : "gallery-" + index;
+      return `images/${safeId}-${suffix}.jpg`;
+    }
+
+    async function getFormModWithUploads() {
+      const mod = getFormMod();
+      const uploads = [];
+
+      if (!mod.id && mod.name) {
+        mod.id = createSlug(mod.name);
+        document.getElementById("id").value = mod.id;
+      }
+
+      const mainInput = document.getElementById("mainImageFile");
+      const galleryInput = document.getElementById("galleryFiles");
+      const mainFile = mainInput && mainInput.files && mainInput.files[0] ? mainInput.files[0] : null;
+      const galleryFiles = galleryInput && galleryInput.files ? Array.from(galleryInput.files) : [];
+
+      if (mainFile) {
+        setStatus("Ana resim hazırlanıyor...", "warn");
+        const path = buildImagePath(mod.id, "main", 1);
+        const content = await readImageAsDataURL(mainFile);
+        mod.image = path;
+        document.getElementById("image").value = path;
+        uploads.push({ path, content });
+      }
+
+      if (galleryFiles.length > 0) {
+        if (galleryFiles.length < 3) {
+          throw new Error("Galeri resmi seçeceksen en az 3 görsel seçmelisin.");
+        }
+
+        if (galleryFiles.length > 10) {
+          throw new Error("Galeri için en fazla 10 görsel seçebilirsin.");
+        }
+
+        mod.gallery = [];
+
+        for (let i = 0; i < galleryFiles.length; i++) {
+          setStatus(`Galeri resmi hazırlanıyor... (${i + 1}/${galleryFiles.length})`, "warn");
+          const path = buildImagePath(mod.id, "gallery", i + 1);
+          const content = await readImageAsDataURL(galleryFiles[i]);
+          mod.gallery.push(path);
+          uploads.push({ path, content });
+        }
+
+        document.getElementById("gallery").value = galleryToText(mod.gallery);
+      }
+
+      return { mod, uploads };
+    }
+
     function getFormMod() {
       const mod = {
         id: document.getElementById("id").value.trim(),
@@ -666,7 +833,17 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
 
     async function addMod() {
       if (isSaving) return;
-      const mod = getFormMod();
+
+      let prepared;
+      try {
+        prepared = await getFormModWithUploads();
+      } catch (error) {
+        alert(error.message);
+        setStatus(error.message, "error");
+        return;
+      }
+
+      const { mod, uploads } = prepared;
       const error = validateMod(mod);
 
       if (error) {
@@ -675,7 +852,7 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
       }
 
       const nextMods = [...workingMods, mod];
-      const saved = await saveModsToServer(nextMods, "Yeni mod GitHub’a kaydedildi. Netlify 1-2 dakika içinde canlı siteyi yenileyecek.");
+      const saved = await saveModsToServer(nextMods, "Yeni mod GitHub’a kaydedildi. Netlify 1-2 dakika içinde canlı siteyi yenileyecek.", uploads);
 
       if (saved) {
         workingMods = nextMods;
@@ -696,7 +873,16 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
         return;
       }
 
-      const mod = getFormMod();
+      let prepared;
+      try {
+        prepared = await getFormModWithUploads();
+      } catch (error) {
+        alert(error.message);
+        setStatus(error.message, "error");
+        return;
+      }
+
+      const { mod, uploads } = prepared;
       const error = validateMod(mod);
 
       if (error) {
@@ -714,7 +900,7 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       if (!confirm(confirmText)) return;
 
       const nextMods = workingMods.map(item => item.id === editingModId ? mod : item);
-      const saved = await saveModsToServer(nextMods, `"${mod.name}" güncellendi. Netlify kısa süre içinde siteyi yenileyecek.`);
+      const saved = await saveModsToServer(nextMods, `"${mod.name}" güncellendi. Netlify kısa süre içinde siteyi yenileyecek.`, uploads);
 
       if (saved) {
         workingMods = nextMods;
@@ -745,6 +931,9 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       document.getElementById("icon").value = mod.icon || "📦";
       document.getElementById("image").value = mod.image || "";
       document.getElementById("gallery").value = galleryToText(mod.gallery);
+      document.getElementById("mainImageFile").value = "";
+      document.getElementById("galleryFiles").value = "";
+      updateSelectedFileInfo();
       document.getElementById("download").value = mod.download && mod.download !== "#" ? mod.download : "";
       document.getElementById("description").value = mod.description || "";
 
@@ -803,7 +992,7 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       }
     }
 
-    async function saveModsToServer(modsArray, successMessage) {
+    async function saveModsToServer(modsArray, successMessage, uploads = []) {
       if (!adminPassword) {
         setStatus("Şifre bulunamadı. Sayfayı yenileyip tekrar giriş yap.", "error");
         return false;
@@ -816,7 +1005,8 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       }
 
       setSaving(true);
-      setStatus("Kaydediliyor... Lütfen bekle.", "warn");
+      const uploadCount = Array.isArray(uploads) ? uploads.length : 0;
+      setStatus(uploadCount ? `Kaydediliyor... ${uploadCount} görsel yüklenecek. Lütfen bekle.` : "Kaydediliyor... Lütfen bekle.", "warn");
 
       try {
         const response = await fetch(functionUrl, {
@@ -824,7 +1014,8 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             password: adminPassword,
-            mods: modsArray
+            mods: modsArray,
+            uploads
           })
         });
 
@@ -925,7 +1116,18 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       const image = document.getElementById("previewImage");
       const icon = document.getElementById("previewIcon");
 
-      if (mod.image) {
+      const mainInput = document.getElementById("mainImageFile");
+      const selectedMainFile = mainInput && mainInput.files && mainInput.files[0] ? mainInput.files[0] : null;
+
+      if (selectedMainFile) {
+        image.src = URL.createObjectURL(selectedMainFile);
+        image.style.display = "block";
+        icon.style.display = "none";
+        image.onerror = function() {
+          image.style.display = "none";
+          icon.style.display = "inline";
+        };
+      } else if (mod.image) {
         image.src = mod.image;
         image.style.display = "block";
         icon.style.display = "none";
@@ -953,6 +1155,9 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       document.getElementById("icon").value = "🚜";
       document.getElementById("image").value = "";
       document.getElementById("gallery").value = "";
+      document.getElementById("mainImageFile").value = "";
+      document.getElementById("galleryFiles").value = "";
+      updateSelectedFileInfo();
       document.getElementById("download").value = "";
       document.getElementById("description").value = "";
       if (clearStatus) setStatus("", "ok");
@@ -974,6 +1179,16 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
         .replace(/\\/g, "\\\\")
         .replace(/'/g, "\\'");
     }
+
+    ["mainImageFile", "galleryFiles"].forEach(function(id) {
+      const element = document.getElementById(id);
+      if (!element) return;
+
+      element.addEventListener("change", function() {
+        updateSelectedFileInfo();
+        updatePreview();
+      });
+    });
 
     fields.forEach(function(id) {
       const element = document.getElementById(id);
