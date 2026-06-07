@@ -16,18 +16,5 @@ window.ModDepotMods = [
     "image": "images/basak-traktor.png",
     "icon": "🚜",
     "download": "https://ay.live/basak"
-  },
-  {
-    "id": "deneme-mod",
-    "name": "Deneme Mod",
-    "category": "Diğer",
-    "description": "Bu geçici test modudur. Admin ekleme sistemini ve canlı site güncellemesini denemek için oluşturulmuştur.",
-    "version": "1.0",
-    "size": "10 MB",
-    "author": "ModDepot",
-    "addedDate": "07.06.2026",
-    "image": "",
-    "icon": "📦",
-    "download": "#"
   }
 ];
