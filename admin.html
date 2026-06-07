@@ -464,7 +464,8 @@
           <textarea id="description" placeholder="Mod açıklamasını yaz"></textarea>
 
           <div class="btn-row">
-            <button id="saveModBtn" class="btn btn-primary" onclick="addMod()">Modu Siteye Kaydet</button>
+            <button id="saveModBtn" class="btn btn-primary" onclick="saveModFromForm()">Modu Siteye Kaydet</button>
+            <button id="cancelEditBtn" class="btn btn-dark hidden" onclick="cancelEdit()">Düzenlemeyi İptal Et</button>
             <button class="btn btn-dark" onclick="resetForm()">Formu Temizle</button>
             <button class="btn btn-dark" onclick="showFullCode(workingMods, 'Mevcut listenin yedek kodu hazırlandı.')">Yedek Kodu Göster</button>
           </div>
@@ -494,7 +495,7 @@
           <div class="box danger-zone" style="margin-top:20px;">
             <h2>Mevcut Modlar</h2>
             <div class="hint">
-              Buradan mod silebilirsin. Silme işlemi onaydan sonra GitHub’a otomatik kaydedilir. Canlı sitenin yenilenmesi Netlify deploy süresine göre 1-2 dakika sürebilir.
+              Buradan modları düzenleyebilir veya silebilirsin. Düzenle butonu bilgileri forma getirir; güncelleme onaydan sonra GitHub’a otomatik kaydedilir.
             </div>
             <div id="currentMods" class="current-list"></div>
             <div id="adminStatus" class="status-ok"></div>
@@ -518,7 +519,7 @@
 
   <footer>© 2026 ModDepot - Yönetim Paneli</footer>
 
-  <script src="js/mods.js?v=5"></script>
+  <script src="js/mods.js?v=6"></script>
 
   <script>
     const fields = ["name", "id", "category", "version", "size", "author", "addedDate", "icon", "image", "download", "description"];
@@ -526,6 +527,7 @@
     let workingMods = Array.isArray(window.ModDepotMods) ? [...window.ModDepotMods] : [];
     let adminPassword = sessionStorage.getItem("moddepot_admin_password") || "";
     let isSaving = false;
+    let editingModId = null;
 
     function login() {
       const password = document.getElementById("passwordInput").value.trim();
@@ -613,7 +615,7 @@
       if (!mod.description) return "Açıklama boş olamaz.";
       if (!/^[a-z0-9-]+$/.test(mod.id)) return "Mod ID sadece küçük harf, rakam ve tire içermeli.";
 
-      const duplicate = workingMods.some(item => item.id === mod.id);
+      const duplicate = workingMods.some(item => item.id === mod.id && item.id !== editingModId);
       if (duplicate) return "Bu Mod ID zaten var. Farklı bir ID yaz.";
 
       return "";
@@ -635,6 +637,14 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
       if (statusText) setStatus(statusText, "ok");
     }
 
+    async function saveModFromForm() {
+      if (editingModId) {
+        await updateMod();
+      } else {
+        await addMod();
+      }
+    }
+
     async function addMod() {
       if (isSaving) return;
       const mod = getFormMod();
@@ -650,9 +660,100 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
 
       if (saved) {
         workingMods = nextMods;
+        editingModId = null;
+        updateFormMode();
         renderCurrentMods();
         resetForm(false);
         showFullCode(workingMods, "Yeni mod kaydedildi. Liste güncellendi.");
+      }
+    }
+
+    async function updateMod() {
+      if (isSaving) return;
+      const originalMod = workingMods.find(item => item.id === editingModId);
+      if (!originalMod) {
+        alert("Düzenlenecek mod bulunamadı. Listeyi yenileyip tekrar dene.");
+        cancelEdit();
+        return;
+      }
+
+      const mod = getFormMod();
+      const error = validateMod(mod);
+
+      if (error) {
+        alert(error);
+        return;
+      }
+
+      const idChanged = mod.id !== editingModId;
+      const confirmText = idChanged
+        ? `"${originalMod.name}" modu güncellenecek.
+
+Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin mi?`
+        : `"${originalMod.name}" modu güncellensin mi?`;
+
+      if (!confirm(confirmText)) return;
+
+      const nextMods = workingMods.map(item => item.id === editingModId ? mod : item);
+      const saved = await saveModsToServer(nextMods, `"${mod.name}" güncellendi. Netlify kısa süre içinde siteyi yenileyecek.`);
+
+      if (saved) {
+        workingMods = nextMods;
+        editingModId = null;
+        updateFormMode();
+        renderCurrentMods();
+        resetForm(false);
+        showFullCode(workingMods, `"${mod.name}" güncellendi. Liste güncellendi.`);
+      }
+    }
+
+    function editMod(modId) {
+      if (isSaving) return;
+      const mod = workingMods.find(item => item.id === modId);
+      if (!mod) {
+        alert("Düzenlenecek mod bulunamadı.");
+        return;
+      }
+
+      editingModId = mod.id;
+      document.getElementById("name").value = mod.name || "";
+      document.getElementById("id").value = mod.id || "";
+      document.getElementById("category").value = mod.category || "Diğer";
+      document.getElementById("version").value = mod.version || "1.0";
+      document.getElementById("size").value = mod.size || "";
+      document.getElementById("author").value = mod.author || "ModDepot";
+      document.getElementById("addedDate").value = mod.addedDate || "";
+      document.getElementById("icon").value = mod.icon || "📦";
+      document.getElementById("image").value = mod.image || "";
+      document.getElementById("download").value = mod.download && mod.download !== "#" ? mod.download : "";
+      document.getElementById("description").value = mod.description || "";
+
+      updateFormMode();
+      updatePreview();
+      setStatus(`"${mod.name}" düzenleme modunda. Değişikliklerden sonra Modu Güncelle butonuna bas.`, "warn");
+      document.getElementById("adminArea").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelEdit() {
+      editingModId = null;
+      updateFormMode();
+      resetForm();
+      setStatus("Düzenleme iptal edildi. Yeni mod ekleme moduna dönüldü.", "ok");
+    }
+
+    function updateFormMode() {
+      const saveButton = document.getElementById("saveModBtn");
+      const cancelButton = document.getElementById("cancelEditBtn");
+      if (editingModId) {
+        saveButton.textContent = "Modu Güncelle";
+        saveButton.classList.remove("btn-primary");
+        saveButton.classList.add("btn-green");
+        cancelButton.classList.remove("hidden");
+      } else {
+        saveButton.textContent = "Modu Siteye Kaydet";
+        saveButton.classList.add("btn-primary");
+        saveButton.classList.remove("btn-green");
+        cancelButton.classList.add("hidden");
       }
     }
 
@@ -672,6 +773,11 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
 
       if (saved) {
         workingMods = nextMods;
+        if (editingModId === modId) {
+          editingModId = null;
+          updateFormMode();
+          resetForm(false);
+        }
         renderCurrentMods();
         showFullCode(workingMods, `"${mod.name}" silindi. Liste güncellendi.`);
       }
@@ -774,6 +880,7 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
               <small>ID: ${escapeHtml(mod.id)}</small>
             </div>
             <div class="current-actions">
+              <button class="mini-btn mini-dark" onclick="editMod('${escapeAttribute(mod.id)}')">Düzenle</button>
               <button class="mini-btn mini-red" onclick="deleteMod('${escapeAttribute(mod.id)}')">Sil</button>
             </div>
           </div>
@@ -809,6 +916,10 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
     }
 
     function resetForm(clearStatus = true) {
+      if (clearStatus && editingModId) {
+        editingModId = null;
+        updateFormMode();
+      }
       document.getElementById("name").value = "";
       document.getElementById("id").value = "";
       document.getElementById("category").value = "Traktör";
@@ -844,7 +955,7 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
       if (!element) return;
 
       element.addEventListener("input", function() {
-        if (id === "name") {
+        if (id === "name" && !editingModId) {
           document.getElementById("id").value = createSlug(element.value);
         }
         updatePreview();
