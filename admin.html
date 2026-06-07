@@ -454,8 +454,13 @@
           <label for="icon">Simge</label>
           <input id="icon" value="🚜" placeholder="🚜">
 
-          <label for="image">Resim Yolu veya Linki</label>
+          <label for="image">Ana Resim Yolu veya Linki</label>
           <input id="image" placeholder="images/traktor.jpg veya https://...">
+          <div class="gallery-help">Ana sayfada sadece bu ana resim görünür.</div>
+
+          <label for="gallery">Detay Galeri Resimleri</label>
+          <textarea id="gallery" placeholder="Her satıra 1 görsel yaz. Örnek:\nimages/traktor-1.jpg\nimages/traktor-2.jpg\nimages/traktor-3.jpg"></textarea>
+          <div class="gallery-help">Mod detay sayfasında galeri olarak görünür. En iyi görünüm için en az 3 görsel ekle.</div>
 
           <label for="download">İndirme Linki</label>
           <input id="download" placeholder="TRLink / ShareMods / ZipShare / Drive linki. Boşsa Yakında olur">
@@ -488,6 +493,7 @@
                   <span id="previewVersion">Versiyon: 1.0</span>
                   <span id="previewSize">Bilinmiyor</span>
                 </div>
+                <div class="preview-gallery-info" id="previewGalleryInfo">Detay galerisi: 0 görsel</div>
               </div>
             </div>
           </div>
@@ -522,7 +528,7 @@
   <script src="js/mods.js?v=6"></script>
 
   <script>
-    const fields = ["name", "id", "category", "version", "size", "author", "addedDate", "icon", "image", "download", "description"];
+    const fields = ["name", "id", "category", "version", "size", "author", "addedDate", "icon", "image", "gallery", "download", "description"];
     const functionUrl = "/.netlify/functions/update-mods";
     let workingMods = Array.isArray(window.ModDepotMods) ? [...window.ModDepotMods] : [];
     let adminPassword = sessionStorage.getItem("moddepot_admin_password") || "";
@@ -586,6 +592,17 @@
       return cleaned + " MB";
     }
 
+    function parseGalleryInput(value) {
+      return String(value || "")
+        .split(/\r?\n|,/)
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    function galleryToText(gallery) {
+      return Array.isArray(gallery) ? gallery.filter(Boolean).join("\n") : "";
+    }
+
     function getFormMod() {
       const mod = {
         id: document.getElementById("id").value.trim(),
@@ -597,6 +614,7 @@
         author: document.getElementById("author").value.trim() || "ModDepot",
         addedDate: document.getElementById("addedDate").value.trim(),
         image: document.getElementById("image").value.trim(),
+        gallery: parseGalleryInput(document.getElementById("gallery").value),
         icon: document.getElementById("icon").value.trim() || "📦",
         download: document.getElementById("download").value.trim() || "#"
       };
@@ -614,6 +632,7 @@
       if (!mod.id) return "Mod ID boş olamaz.";
       if (!mod.description) return "Açıklama boş olamaz.";
       if (!/^[a-z0-9-]+$/.test(mod.id)) return "Mod ID sadece küçük harf, rakam ve tire içermeli.";
+      if (mod.gallery.length > 0 && mod.gallery.length < 3) return "Detay galerisi ekleyeceksen en az 3 görsel yazmalısın. Galeri istemiyorsan alanı boş bırakabilirsin.";
 
       const duplicate = workingMods.some(item => item.id === mod.id && item.id !== editingModId);
       if (duplicate) return "Bu Mod ID zaten var. Farklı bir ID yaz.";
@@ -725,6 +744,7 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       document.getElementById("addedDate").value = mod.addedDate || "";
       document.getElementById("icon").value = mod.icon || "📦";
       document.getElementById("image").value = mod.image || "";
+      document.getElementById("gallery").value = galleryToText(mod.gallery);
       document.getElementById("download").value = mod.download && mod.download !== "#" ? mod.download : "";
       document.getElementById("description").value = mod.description || "";
 
@@ -877,7 +897,7 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
             <div>
               <strong>${escapeHtml(mod.name)}</strong><br>
               ${escapeHtml(mod.category)} - ${escapeHtml(mod.version)} - ${escapeHtml(mod.size)}<br>
-              <small>ID: ${escapeHtml(mod.id)}</small>
+              <small>ID: ${escapeHtml(mod.id)} | Galeri: ${Array.isArray(mod.gallery) ? mod.gallery.length : 0} görsel</small>
             </div>
             <div class="current-actions">
               <button class="mini-btn mini-dark" onclick="editMod('${escapeAttribute(mod.id)}')">Düzenle</button>
@@ -897,6 +917,10 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       document.getElementById("previewVersion").textContent = "Versiyon: " + mod.version;
       document.getElementById("previewSize").textContent = mod.size;
       document.getElementById("previewIcon").textContent = mod.icon;
+      const previewGalleryInfo = document.getElementById("previewGalleryInfo");
+      if (previewGalleryInfo) {
+        previewGalleryInfo.textContent = "Detay galerisi: " + mod.gallery.length + " görsel";
+      }
 
       const image = document.getElementById("previewImage");
       const icon = document.getElementById("previewIcon");
@@ -928,6 +952,7 @@ Dikkat: Mod ID değiştiği için eski detay linki değişebilir. Devam edilsin 
       document.getElementById("author").value = "ModDepot";
       document.getElementById("icon").value = "🚜";
       document.getElementById("image").value = "";
+      document.getElementById("gallery").value = "";
       document.getElementById("download").value = "";
       document.getElementById("description").value = "";
       if (clearStatus) setStatus("", "ok");

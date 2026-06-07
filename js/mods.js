@@ -13,6 +13,11 @@ window.ModDepotMods = [
     "author": "ModDepot",
     "addedDate": "06.06.2026",
     "image": "images/basak-traktor.png",
+    "gallery": [
+      "images/basak-traktor.png",
+      "images/basak-traktor.png",
+      "images/basak-traktor.png"
+    ],
     "icon": "🚜",
     "download": "https://ay.live/basak"
   }

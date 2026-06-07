@@ -20,6 +20,18 @@ function cleanText(value, fallback = "") {
   return String(value).trim();
 }
 
+function cleanGallery(value) {
+  if (Array.isArray(value)) {
+    return value.map(item => cleanText(item)).filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value.split(/\r?\n|,/).map(item => item.trim()).filter(Boolean);
+  }
+
+  return [];
+}
+
 function cleanMod(mod) {
   return {
     id: cleanText(mod.id),
@@ -31,6 +43,7 @@ function cleanMod(mod) {
     author: cleanText(mod.author, "ModDepot"),
     addedDate: cleanText(mod.addedDate),
     image: cleanText(mod.image),
+    gallery: cleanGallery(mod.gallery),
     icon: cleanText(mod.icon, "📦"),
     download: cleanText(mod.download, "#")
   };

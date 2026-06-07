@@ -278,6 +278,57 @@
       color: #7dd3fc;
     }
 
+
+    .gallery-card {
+      margin-top: 18px;
+      background: #111827;
+      border: 1px solid #243047;
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .gallery-card h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .gallery-thumb {
+      height: 90px;
+      border: 2px solid #243047;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #0b1220;
+      padding: 0;
+      transition: 0.2s;
+    }
+
+    .gallery-thumb:hover,
+    .gallery-thumb.active {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+
+    .gallery-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-note {
+      margin-top: 10px;
+      color: #94a3b8;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .features {
       margin-top: 24px;
       background: #111827;
@@ -412,6 +463,34 @@
       return true;
     }
 
+
+    function getGalleryImages(mod) {
+      if (Array.isArray(mod.gallery) && mod.gallery.length > 0) {
+        return mod.gallery.map(item => String(item || "").trim()).filter(Boolean);
+      }
+
+      if (mod.image) {
+        return [mod.image];
+      }
+
+      return [];
+    }
+
+    function changeMainImage(src, button) {
+      const mainImage = document.getElementById("mainModImage");
+      if (!mainImage || !src) return;
+
+      mainImage.src = src;
+
+      document.querySelectorAll(".gallery-thumb").forEach(item => {
+        item.classList.remove("active");
+      });
+
+      if (button) {
+        button.classList.add("active");
+      }
+    }
+
     function showDetail() {
       if (!mod) {
         pageTitle.textContent = "Mod Bulunamadı";
@@ -436,9 +515,27 @@
       const downloadClass = downloadReady ? "download-btn" : "download-btn disabled";
       const downloadTarget = downloadReady ? ' target="_blank" rel="noopener noreferrer"' : "";
       const downloadSource = getDownloadSource(mod.download);
-      const coverHTML = mod.image
-        ? `<img src="${mod.image}" alt="${mod.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="cover-icon" style="display:none;">${mod.icon}</div>`
+      const galleryImages = getGalleryImages(mod);
+      const mainImage = galleryImages[0] || mod.image || "";
+      const coverHTML = mainImage
+        ? `<img id="mainModImage" src="${mainImage}" alt="${mod.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="cover-icon" style="display:none;">${mod.icon}</div>`
         : `<div class="cover-icon">${mod.icon}</div>`;
+
+      const galleryHTML = galleryImages.length > 0
+        ? `
+            <div class="gallery-card">
+              <h3>Mod Galerisi</h3>
+              <div class="gallery-grid">
+                ${galleryImages.map((image, index) => `
+                  <button type="button" class="gallery-thumb ${index === 0 ? "active" : ""}" onclick="changeMainImage('${image.replace(/'/g, "\\'")}', this)">
+                    <img src="${image}" alt="${mod.name} görsel ${index + 1}">
+                  </button>
+                `).join("")}
+              </div>
+              <div class="gallery-note">Küçük görsellere tıklayarak büyük resmi değiştirebilirsin.</div>
+            </div>
+          `
+        : "";
 
       detailArea.innerHTML = `
         <div class="detail-layout">
@@ -454,6 +551,8 @@
                 <p>${mod.description}</p>
               </div>
             </div>
+
+            ${galleryHTML}
 
             <div class="features">
               <h3>Mod Açıklaması</h3>
