@@ -8,8 +8,8 @@
   <meta name="author" content="ModDepot">
   <meta name="theme-color" content="#0b1220">
 
-  <link rel="icon" type="image/png" href="images/favicon.png?v=4">
-  <link rel="apple-touch-icon" href="images/favicon.png?v=4">
+  <link rel="icon" type="image/png" href="images/favicon.png?v=5">
+  <link rel="apple-touch-icon" href="images/favicon.png?v=5">
 
   <style>
     * { box-sizing: border-box; }
@@ -51,10 +51,7 @@
       display: block;
     }
 
-    .logo-fallback {
-      display: none;
-    }
-
+    .logo-fallback { display: none; }
 
     .nav-links {
       display: flex;
@@ -96,7 +93,7 @@
     .hero p {
       color: #cbd5e1;
       font-size: 17px;
-      max-width: 720px;
+      max-width: 760px;
       margin: 14px auto 0;
       line-height: 1.6;
     }
@@ -124,9 +121,7 @@
 
     .login-card h2,
     .panel h2,
-    .box h2 {
-      margin-top: 0;
-    }
+    .box h2 { margin-top: 0; }
 
     .grid {
       display: grid;
@@ -158,9 +153,7 @@
 
     input:focus,
     select:focus,
-    textarea:focus {
-      border-color: #38bdf8;
-    }
+    textarea:focus { border-color: #38bdf8; }
 
     textarea {
       min-height: 120px;
@@ -194,21 +187,21 @@
       text-align: center;
     }
 
-    .btn-primary {
-      background: #38bdf8;
-      color: #07111f;
+    .btn:disabled,
+    .mini-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
-    .btn-green {
-      background: #a3e635;
-      color: #102000;
-    }
-
+    .btn-primary { background: #38bdf8; color: #07111f; }
+    .btn-green { background: #a3e635; color: #102000; }
     .btn-dark {
       background: #1f2937;
       color: #e5e7eb;
       border: 1px solid #334155;
     }
+    .btn-red { background: #ef4444; color: #fff; }
+    .btn-red:hover { background: #f87171; }
 
     .btn-row {
       display: flex;
@@ -221,7 +214,20 @@
       margin-top: 12px;
       color: #fca5a5;
       font-weight: bold;
+      line-height: 1.5;
     }
+
+    .status-ok,
+    .status-error,
+    .status-warn {
+      font-weight: bold;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .status-ok { color: #a3e635; }
+    .status-error { color: #fca5a5; }
+    .status-warn { color: #fde68a; }
 
     .preview-card {
       background: #111827;
@@ -263,20 +269,9 @@
       z-index: 2;
     }
 
-    .preview-body {
-      padding: 18px;
-    }
-
-    .preview-body h3 {
-      margin: 0 0 10px;
-      font-size: 22px;
-    }
-
-    .preview-body p {
-      color: #cbd5e1;
-      line-height: 1.5;
-      font-size: 15px;
-    }
+    .preview-body { padding: 18px; }
+    .preview-body h3 { margin: 0 0 10px; font-size: 22px; }
+    .preview-body p { color: #cbd5e1; line-height: 1.5; font-size: 15px; }
 
     .preview-meta {
       display: flex;
@@ -292,7 +287,7 @@
       display: grid;
       gap: 10px;
       margin-top: 12px;
-      max-height: 260px;
+      max-height: 310px;
       overflow: auto;
     }
 
@@ -305,9 +300,39 @@
       font-size: 14px;
     }
 
-    .current-item strong {
-      color: #f8fafc;
+    .current-item strong { color: #f8fafc; }
+
+    .current-item-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
     }
+
+    .current-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      border: none;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .mini-red { background: #ef4444; color: #fff; }
+    .mini-dark {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+    }
+
+    .danger-zone { border-color: rgba(248, 113, 113, 0.45); }
 
     pre {
       background: #060b14;
@@ -334,75 +359,13 @@
       background: #080d18;
     }
 
-
-
-    .danger-zone {
-      border-color: rgba(248, 113, 113, 0.45);
-    }
-
-    .btn-red {
-      background: #ef4444;
-      color: #fff;
-    }
-
-    .btn-red:hover {
-      background: #f87171;
-    }
-
-    .current-item-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .current-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .mini-btn {
-      border: none;
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .mini-red {
-      background: #ef4444;
-      color: #fff;
-    }
-
-    .mini-dark {
-      background: #1f2937;
-      color: #e5e7eb;
-      border: 1px solid #334155;
-    }
-
-    .status-ok {
-      color: #a3e635;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
     @media (max-width: 900px) {
       .grid,
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .hero h1 {
-        font-size: 34px;
-      }
+      .form-row { grid-template-columns: 1fr; }
+      .navbar { flex-direction: column; gap: 12px; }
+      .hero h1 { font-size: 34px; }
+      .current-item-row { align-items: flex-start; flex-direction: column; }
+      .current-actions { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -410,7 +373,7 @@
 <body>
   <nav class="navbar">
     <div class="logo">
-      <img class="brand-logo-img" src="images/moddepot-logo.png?v=4" alt="ModDepot" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+      <img class="brand-logo-img" src="images/moddepot-logo.png?v=5" alt="ModDepot" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
       <span class="logo-fallback">Mod<span>Depot</span></span>
     </div>
     <div class="nav-links">
@@ -423,15 +386,15 @@
   <section class="hero">
     <div class="hero-badge">MODDEPOT YÖNETİM</div>
     <h1>Mod Yönetim Paneli</h1>
-    <p>Bu panel mod ekleme ve silme işlemleri için hatasız tam <b>mods.js</b> kodu hazırlar. Güvenli başlangıç için dosyaya otomatik yazmaz.</p>
+    <p>Bu panel mod ekleme ve silme işlemlerini kod kopyalamadan GitHub’a kaydeder. Kaydetme işlemi yalnızca Netlify canlı sitede çalışır.</p>
   </section>
 
   <main class="admin-wrap">
     <section id="loginArea" class="login-card">
       <h2>Site Sahibi Girişi</h2>
-      <p class="hint">Devam etmek için yönetim şifresini gir.</p>
+      <p class="hint">Devam etmek için Netlify’de belirlediğin yönetim şifresini gir. Şifre bu dosyanın içinde saklanmaz; kaydetme sırasında sunucuda kontrol edilir.</p>
       <label for="passwordInput">Şifre</label>
-      <input type="password" id="passwordInput" placeholder="Şifreyi yaz">
+      <input type="password" id="passwordInput" placeholder="Şifreyi yaz" autocomplete="current-password">
       <div class="btn-row">
         <button class="btn btn-green" onclick="login()">Giriş Yap</button>
         <a class="btn btn-dark" href="index.html">Ana Sayfaya Dön</a>
@@ -444,7 +407,7 @@
         <div class="panel">
           <h2>Yeni Mod Bilgileri</h2>
           <div class="hint">
-            Formu doldur, <b>Tam mods.js Kodunu Hazırla</b> butonuna bas. İndirme linkine TRLink / ShareMods / ZipShare / Drive linki koyabilirsin. Oluşan kodu <b>E:\ModDepot\js\mods.js</b> dosyasının tamamıyla değiştir.
+            Formu doldurup <b>Modu Siteye Kaydet</b> butonuna bas. İndirme linki boş kalırsa sitede <b>Yakında</b> olarak görünür.
           </div>
 
           <label for="name">Mod Adı</label>
@@ -484,7 +447,7 @@
             </div>
             <div>
               <label for="addedDate">Eklenme Tarihi</label>
-              <input id="addedDate" placeholder="06.06.2026">
+              <input id="addedDate" placeholder="07.06.2026">
             </div>
           </div>
 
@@ -501,9 +464,11 @@
           <textarea id="description" placeholder="Mod açıklamasını yaz"></textarea>
 
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="prepareFullCode()">Tam mods.js Kodunu Hazırla</button>
+            <button id="saveModBtn" class="btn btn-primary" onclick="addMod()">Modu Siteye Kaydet</button>
             <button class="btn btn-dark" onclick="resetForm()">Formu Temizle</button>
+            <button class="btn btn-dark" onclick="showFullCode(workingMods, 'Mevcut listenin yedek kodu hazırlandı.')">Yedek Kodu Göster</button>
           </div>
+          <div id="saveStatus" class="status-warn"></div>
         </div>
 
         <div>
@@ -529,7 +494,7 @@
           <div class="box danger-zone" style="margin-top:20px;">
             <h2>Mevcut Modlar</h2>
             <div class="hint">
-              Buradan mod silebilirsin. Sil butonu önce panelde listeden kaldırır, sonra sana yeni tam <b>mods.js</b> kodunu verir. Onu <b>E:\ModDepot\js\mods.js</b> içine komple yapıştırınca silme kalıcı olur.
+              Buradan mod silebilirsin. Silme işlemi onaydan sonra GitHub’a otomatik kaydedilir. Canlı sitenin yenilenmesi Netlify deploy süresine göre 1-2 dakika sürebilir.
             </div>
             <div id="currentMods" class="current-list"></div>
             <div id="adminStatus" class="status-ok"></div>
@@ -538,9 +503,9 @@
       </div>
 
       <div id="outputArea" class="box hidden" style="margin-top:24px;">
-        <h2>Hazır Tam mods.js Kodu</h2>
+        <h2>Yedek Tam mods.js Kodu</h2>
         <div class="hint">
-          Aşağıdaki kodun tamamını kopyala. Sonra <b>E:\ModDepot\js\mods.js</b> dosyasını aç, içindekilerin tamamını sil, bunu yapıştır ve kaydet. Ekleme ve silme işlemlerinde virgül hatasını engeller.
+          Otomatik sistemde sorun olursa bu kodu yedek olarak kullanabilirsin. Normal kullanımda kod kopyalaman gerekmez.
         </div>
         <div class="btn-row">
           <button class="btn btn-green" onclick="copyFullCode()">Kodu Kopyala</button>
@@ -553,25 +518,36 @@
 
   <footer>© 2026 ModDepot - Yönetim Paneli</footer>
 
-  <script src="js/mods.js"></script>
+  <script src="js/mods.js?v=5"></script>
 
   <script>
-    const ADMIN_PASSWORD = "moddepot2026";
     const fields = ["name", "id", "category", "version", "size", "author", "addedDate", "icon", "image", "download", "description"];
+    const functionUrl = "/.netlify/functions/update-mods";
     let workingMods = Array.isArray(window.ModDepotMods) ? [...window.ModDepotMods] : [];
+    let adminPassword = sessionStorage.getItem("moddepot_admin_password") || "";
+    let isSaving = false;
 
     function login() {
-      const password = document.getElementById("passwordInput").value;
+      const password = document.getElementById("passwordInput").value.trim();
       const message = document.getElementById("loginMessage");
 
-      if (password === ADMIN_PASSWORD) {
-        document.getElementById("loginArea").classList.add("hidden");
-        document.getElementById("adminArea").classList.remove("hidden");
-        setToday();
-        renderCurrentMods();
-        updatePreview();
+      if (!password) {
+        message.textContent = "Şifre boş olamaz.";
+        return;
+      }
+
+      adminPassword = password;
+      sessionStorage.setItem("moddepot_admin_password", adminPassword);
+      document.getElementById("loginArea").classList.add("hidden");
+      document.getElementById("adminArea").classList.remove("hidden");
+      setToday();
+      renderCurrentMods();
+      updatePreview();
+
+      if (location.protocol === "file:") {
+        setStatus("Bu panel yerel dosyada açılmış. Otomatik kayıt için Netlify canlı admin linkinden açmalısın.", "warn");
       } else {
-        message.textContent = "Şifre yanlış.";
+        setStatus("Panel hazır. Şifre kaydetme sırasında sunucuda kontrol edilecek.", "ok");
       }
     }
 
@@ -645,9 +621,8 @@
 
     function makeFullCode(modsArray) {
       return `// ModDepot mod listesi
-// Yeni modlar buradan yönetilir.
-// İndirme linki yoksa "download": "#" kalır ve sitede Yakında görünür.
-// Gerçek link eklenirse İndir butonu yeni sekmede açılır.
+// Bu dosya Netlify admin sistemi tarafından otomatik güncellenir.
+// Manuel düzenleme yapmadan önce yedek almanız önerilir.
 
 window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
 `;
@@ -657,12 +632,11 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
       document.getElementById("fullCodeOutput").textContent = makeFullCode(modsArray);
       document.getElementById("outputArea").classList.remove("hidden");
       document.getElementById("outputArea").scrollIntoView({ behavior: "smooth" });
-
-      const status = document.getElementById("adminStatus");
-      if (statusText && status) status.textContent = statusText;
+      if (statusText) setStatus(statusText, "ok");
     }
 
-    function prepareFullCode() {
+    async function addMod() {
+      if (isSaving) return;
       const mod = getFormMod();
       const error = validateMod(mod);
 
@@ -671,27 +645,102 @@ window.ModDepotMods = ${JSON.stringify(modsArray, null, 2)};
         return;
       }
 
-      workingMods = [...workingMods, mod];
-      renderCurrentMods();
-      showFullCode(workingMods, "Yeni mod listeye eklendi. Aşağıdaki tam kodu mods.js içine yapıştırınca kalıcı olur.");
-      resetForm(false);
+      const nextMods = [...workingMods, mod];
+      const saved = await saveModsToServer(nextMods, "Yeni mod GitHub’a kaydedildi. Netlify 1-2 dakika içinde canlı siteyi yenileyecek.");
+
+      if (saved) {
+        workingMods = nextMods;
+        renderCurrentMods();
+        resetForm(false);
+        showFullCode(workingMods, "Yeni mod kaydedildi. Liste güncellendi.");
+      }
     }
 
-    function deleteMod(modId) {
+    async function deleteMod(modId) {
+      if (isSaving) return;
       const mod = workingMods.find(item => item.id === modId);
       if (!mod) {
         alert("Silinecek mod bulunamadı.");
         return;
       }
 
-      const confirmDelete = confirm(`"${mod.name}" modunu silmek istiyor musun?
-
-Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.js dosyasına yapıştırman gerekir.`);
+      const confirmDelete = confirm(`"${mod.name}" modunu silmek istiyor musun?\n\nOnaylarsan silme işlemi GitHub’a otomatik kaydedilir.`);
       if (!confirmDelete) return;
 
-      workingMods = workingMods.filter(item => item.id !== modId);
-      renderCurrentMods();
-      showFullCode(workingMods, `"${mod.name}" listeden kaldırıldı. Aşağıdaki tam kodu mods.js içine yapıştırınca silme kalıcı olur.`);
+      const nextMods = workingMods.filter(item => item.id !== modId);
+      const saved = await saveModsToServer(nextMods, `"${mod.name}" silindi. Netlify kısa süre içinde siteyi yenileyecek.`);
+
+      if (saved) {
+        workingMods = nextMods;
+        renderCurrentMods();
+        showFullCode(workingMods, `"${mod.name}" silindi. Liste güncellendi.`);
+      }
+    }
+
+    async function saveModsToServer(modsArray, successMessage) {
+      if (!adminPassword) {
+        setStatus("Şifre bulunamadı. Sayfayı yenileyip tekrar giriş yap.", "error");
+        return false;
+      }
+
+      if (location.protocol === "file:") {
+        setStatus("Otomatik kayıt yerel dosyada çalışmaz. Netlify canlı admin linkinden açmalısın.", "error");
+        showFullCode(modsArray, "Yerel dosyada olduğun için yedek kod hazırlandı.");
+        return false;
+      }
+
+      setSaving(true);
+      setStatus("Kaydediliyor... Lütfen bekle.", "warn");
+
+      try {
+        const response = await fetch(functionUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            password: adminPassword,
+            mods: modsArray
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.ok) {
+          const message = data.message || "Kaydetme başarısız oldu.";
+          const details = data.details ? `\n\nDetay: ${data.details}` : "";
+          setStatus(message + details, "error");
+          alert(message);
+          return false;
+        }
+
+        setStatus(successMessage || data.message || "Kaydedildi.", "ok");
+        return true;
+      } catch (error) {
+        setStatus("Sunucuya bağlanırken hata oluştu: " + error.message, "error");
+        return false;
+      } finally {
+        setSaving(false);
+      }
+    }
+
+    function setSaving(value) {
+      isSaving = value;
+      document.querySelectorAll("button").forEach(button => {
+        if (button.id === "saveModBtn" || button.classList.contains("mini-btn")) {
+          button.disabled = value;
+        }
+      });
+    }
+
+    function setStatus(text, type) {
+      const saveStatus = document.getElementById("saveStatus");
+      const adminStatus = document.getElementById("adminStatus");
+      const className = type === "error" ? "status-error" : type === "warn" ? "status-warn" : "status-ok";
+
+      [saveStatus, adminStatus].forEach(element => {
+        if (!element) return;
+        element.className = className;
+        element.textContent = text || "";
+      });
     }
 
     function copyFullCode() {
@@ -702,7 +751,7 @@ Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.j
       }
 
       navigator.clipboard.writeText(code).then(function() {
-        alert("Kod kopyalandı. Şimdi js/mods.js dosyasını aç, içindekilerin tamamını sil, bu kodu yapıştır ve kaydet.");
+        alert("Kod kopyalandı.");
       }).catch(function() {
         alert("Kopyalama olmadı. Kodu elle seçip kopyalayabilirsin.");
       });
@@ -759,7 +808,7 @@ Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.j
       }
     }
 
-    function resetForm(clearOutput = true) {
+    function resetForm(clearStatus = true) {
       document.getElementById("name").value = "";
       document.getElementById("id").value = "";
       document.getElementById("category").value = "Traktör";
@@ -770,7 +819,7 @@ Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.j
       document.getElementById("image").value = "";
       document.getElementById("download").value = "";
       document.getElementById("description").value = "";
-      if (clearOutput) document.getElementById("adminStatus").textContent = "";
+      if (clearStatus) setStatus("", "ok");
       setToday();
       updatePreview();
     }
@@ -787,7 +836,7 @@ Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.j
     function escapeAttribute(text) {
       return String(text || "")
         .replace(/\\/g, "\\\\")
-        .replace(/'/g, "\'");
+        .replace(/'/g, "\\'");
     }
 
     fields.forEach(function(id) {
@@ -807,6 +856,10 @@ Bu işlem önce panelde siler. Kalıcı olması için çıkan tam kodu js/mods.j
     document.getElementById("passwordInput").addEventListener("keydown", function(event) {
       if (event.key === "Enter") login();
     });
+
+    if (adminPassword) {
+      document.getElementById("passwordInput").value = adminPassword;
+    }
   </script>
 </body>
 </html>
